@@ -47,6 +47,7 @@ public class BinaryServer {
         System.out.println("Wait for messages");
 
         Building b = Buildings.inputBuilding(in);
+        System.out.println("Server gets building");
         rate = getRating(b);
         out.writeDouble(rate);
         System.out.println(rate);
@@ -65,14 +66,17 @@ public class BinaryServer {
         double rate = b.getAllAreaOfBuilding();
         switch (b.getClass().getSimpleName()) {
             case "Dwelling": {
+                System.out.println("Server gets dwelling building");
                 rate *= DEFAULT_RATES[0];
                 break;
             }
             case "OfficeBuilding": {
+                System.out.println("Server gets office building");
                 rate *= DEFAULT_RATES[1];
                 break;
             }
             case "Hotel": {
+                System.out.println("Server gets hotel building");
                 rate *= DEFAULT_RATES[2];
                 break;
             }

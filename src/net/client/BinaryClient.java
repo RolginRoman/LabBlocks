@@ -6,6 +6,7 @@ import Building.dwelling.DwellingFactory;
 import Building.dwelling.hotel.HotelFactory;
 import Building.office.OfficeFactory;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,11 +36,12 @@ public class BinaryClient {
 
         Socket mySocket = null;
         OutputStream out = null;
-        BufferedReader in = null;
+        DataInputStream in = null;
         try {
             mySocket = new Socket("localhost", 4444);
             out = mySocket.getOutputStream();
-            in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
+            //in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
+            in = new DataInputStream(mySocket.getInputStream());
         }
         catch (UnknownHostException e) {
             // TODO Auto-generated catch block
@@ -57,7 +59,7 @@ public class BinaryClient {
         BufferedReader bufR = new BufferedReader(typesFile);
         Writer ratingFile = new FileWriter(rating);
         PrintWriter rateWriter = new PrintWriter(ratingFile);
-        
+
         String type;
         Building br;
         try {
@@ -78,7 +80,9 @@ public class BinaryClient {
             }
             br = Buildings.readBuilding(inputFile);
             Buildings.outputBuilding(br, out);
-            rateWriter.println(in.readLine());
+            double rate = in.readDouble();
+            System.out.println(rate);
+            rateWriter.println(rate);
             //out.writeUTF(br.toString());
         }
         catch (IOException e) {
