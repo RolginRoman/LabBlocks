@@ -45,12 +45,13 @@ public class BinaryServer {
         String input = "", output;
         double rate = 0;
         System.out.println("Wait for messages");
-
-        Building b = Buildings.inputBuilding(in);
-        System.out.println("Server gets building");
-        rate = getRating(b);
-        out.writeDouble(rate);
-        System.out.println(rate);
+        Building b;
+        while ((b = Buildings.inputBuilding(in)) != null) {
+            System.out.println("Server gets building");
+            rate = getRating(b);
+            out.writeDouble(rate);
+            System.out.println(rate);
+        }
 
         out.close();
         in.close();

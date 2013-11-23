@@ -62,34 +62,34 @@ public class BinaryClient {
 
         String type;
         Building br;
-        try {
-            type = bufR.readLine();
-            switch (type) {
-                case "Dwelling": {
-                    Buildings.setBuildingFactory(new DwellingFactory());
-                    break;
+        while ((type = bufR.readLine()) != null) {
+            try {
+                switch (type) {
+                    case "Dwelling": {
+                        Buildings.setBuildingFactory(new DwellingFactory());
+                        break;
+                    }
+                    case "OfficeBuilding": {
+                        Buildings.setBuildingFactory(new OfficeFactory());
+                        break;
+                    }
+                    case "Hotel": {
+                        Buildings.setBuildingFactory(new HotelFactory());
+                        break;
+                    }
                 }
-                case "OfficeBuilding": {
-                    Buildings.setBuildingFactory(new OfficeFactory());
-                    break;
-                }
-                case "Hotel": {
-                    Buildings.setBuildingFactory(new HotelFactory());
-                    break;
-                }
+                br = Buildings.readBuilding(inputFile);
+                Buildings.outputBuilding(br, out);
+                double rate = in.readDouble();
+                System.out.println(rate);
+                rateWriter.println(rate);
+                rateWriter.flush();
+                //out.writeUTF(br.toString());
             }
-            br = Buildings.readBuilding(inputFile);
-            Buildings.outputBuilding(br, out);
-            double rate = in.readDouble();
-            System.out.println(rate);
-            rateWriter.println(rate);
-            //out.writeUTF(br.toString());
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
         out.close();
         in.close();
         stdIn.close();

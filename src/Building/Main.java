@@ -65,16 +65,25 @@ public class Main {
             Writer fos =new FileWriter("input.txt");
             
             Buildings.writeBuilding(ob, fos);
+            Buildings.writeBuilding(ob, fos);
+            Buildings.writeBuilding(ob, fos);
+            Buildings.writeBuilding(ob, fos);
+            fos.close();
             System.out.println(ob.toString());
             Reader r = new FileReader("input.txt");
             
             Building readed = Buildings.readBuilding(r);
 
+            r.close();
+            
             System.out.println(readed.toString());
             
             Writer types =new FileWriter("types.txt");
             PrintWriter bw = new PrintWriter(types);
             bw.println("Dwelling");
+            bw.println("OfficeBuilding");
+            bw.println("Dwelling");
+            bw.println("Hotel");
             bw.flush();
             types.close();
         }

@@ -53,7 +53,7 @@ public class Buildings {
                 myOut.writeDouble(building.getOneFloor(i).getOneSpace(j).getArea());
             }
         }
-        out.close();
+        myOut.flush();
     }
 
     public static Building inputBuilding(InputStream in) throws IOException {
@@ -82,7 +82,7 @@ public class Buildings {
                 pw.println(building.getOneFloor(i).getOneSpace(j).getArea());
             }
         }
-        pw.close();
+        pw.flush();
     }
 
     public static Building readBuilding(Reader in) throws IOException {
