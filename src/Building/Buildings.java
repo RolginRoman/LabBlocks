@@ -8,9 +8,8 @@ public class Buildings {
 
     private static BuildingFactory myFactory = new DwellingFactory();
 
-    public static Floor synchronizedFloor(Floor floor) {
-        Floor sf = new SynchronizedFloor(floor);
-        return sf;
+    public static Floor getSynchronizedFloor(Floor floor) {
+        return new SynchronizedFloor(floor);
     }
 
     public static void setBuildingFactory(BuildingFactory bf) {
@@ -45,10 +44,8 @@ public class Buildings {
         DataOutputStream myOut = new DataOutputStream(out);
         myOut.writeInt(building.getNumberOfFloor());
         for (int i = 0; i < building.getNumberOfFloor(); i++) {
-
             myOut.writeInt(building.getOneFloor(i).getNumberOfSpaces());
             for (int j = 0; j < building.getOneFloor(i).getNumberOfSpaces(); j++) {
-
                 myOut.writeInt(building.getOneFloor(i).getOneSpace(j).getAmtOfRoom());
                 myOut.writeDouble(building.getOneFloor(i).getOneSpace(j).getArea());
             }
@@ -85,22 +82,68 @@ public class Buildings {
         pw.flush();
     }
 
+    public static void writeBuildingInLine(Building building, Writer out) {
+        PrintWriter pw = new PrintWriter(new BufferedWriter(out));
+        pw.print(Integer.toString(building.getNumberOfFloor()));
+        pw.print(" ");
+        for (int i = 0; i < building.getNumberOfFloor(); i++) {
+            pw.print(building.getOneFloor(i).getNumberOfSpaces());
+            pw.print(" ");
+            for (int j = 0; j < building.getOneFloor(i).getNumberOfSpaces(); j++) {
+                pw.print(building.getOneFloor(i).getOneSpace(j).getAmtOfRoom());
+                pw.print(" ");
+                pw.print(building.getOneFloor(i).getOneSpace(j).getArea());
+                pw.print(" ");
+            }
+        }
+        pw.println();
+        pw.flush();
+    }
+
+//    public static Building readBuilding(Reader in) throws IOException {
+//        BufferedReader myIn = new BufferedReader(in);
+//        int numberFloor = Integer.parseInt(myIn.readLine());
+//        Floor[] massFloor = new Floor[numberFloor];
+//        for (int i = 0; i < numberFloor; i++) {
+//            Space[] massSpace = new Space[Integer.parseInt(myIn.readLine())];
+//            for (int j = 0; j < massSpace.length; j++) {
+//                //Space sp = new Office(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
+//                Space s = createSpace(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
+//                massSpace[j] = s;
+//            }
+//            massFloor[i] = createFloor(massSpace);
+//            //new OfficeFloor(massSpace);
+//        }
+//        Building building = createBuild(massFloor);//new OfficeBuilding(massFloor);
+//        return building;
+//    }
     public static Building readBuilding(Reader in) throws IOException {
-        BufferedReader myIn = new BufferedReader(in);
-        int numberFloor = Integer.parseInt(myIn.readLine());
-        Floor[] massFloor = new Floor[numberFloor];
-        for (int i = 0; i < numberFloor; i++) {
-            Space[] massSpace = new Space[Integer.parseInt(myIn.readLine())];
+        StreamTokenizer st = new StreamTokenizer(in);
+        do {
+            st.nextToken();
+        } while (st.ttype != StreamTokenizer.TT_NUMBER);
+        Floor[] massFloor = new Floor[(int) st.nval];
+        for (int i = 0; i < massFloor.length; i++) {
+            do {
+                st.nextToken();
+            } while (st.ttype != StreamTokenizer.TT_NUMBER);
+            Space[] massSpace = new Space[(int) st.nval];
+            int numOfRooms;
+            double square;
             for (int j = 0; j < massSpace.length; j++) {
-                //Space sp = new Office(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
-                Space s = createSpace(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
+                do {
+                    st.nextToken();
+                } while (st.ttype != StreamTokenizer.TT_NUMBER);
+                numOfRooms = (int) st.nval;
+                do {
+                    st.nextToken();
+                } while (st.ttype != StreamTokenizer.TT_NUMBER);
+                square = st.nval;
+                Space s = createSpace(numOfRooms, square);
                 massSpace[j] = s;
             }
             massFloor[i] = createFloor(massSpace);
-                    //new OfficeFloor(massSpace);
         }
-
-        Building building = createBuild(massFloor);//new OfficeBuilding(massFloor);
-        return building;
+        return createBuild(massFloor);
     }
 }

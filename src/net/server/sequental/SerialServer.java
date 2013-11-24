@@ -14,13 +14,14 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 
-public class BinaryServer {
+public class SerialServer {
 
     static final double[] DEFAULT_RATES = new double[]{1000, 1500, 2000};
 
@@ -48,16 +49,22 @@ public class BinaryServer {
         out = new DataOutputStream(client.getOutputStream());
         //in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         in = client.getInputStream();
+        ObjectInputStream ois = new ObjectInputStream(in);
         String input = "", output, type;
         double rate = 0;
         System.out.println("Wait for messages");
-        out.writeUTF("You have been connected to server.");
         DataInputStream dis = new DataInputStream(in);
-        Building b;
+        Building b=null;
         try {
             while ((type = dis.readUTF()) != null) {
                 setFactory(type);
-                b = Buildings.inputBuilding(in);
+                //b = Buildings.inputBuilding(in);
+                try {
+                    b = (Building)ois.readObject();
+                }
+                catch (ClassNotFoundException ex) {
+                    System.out.println("Class Building broken");
+                }
                 System.out.println("Server gets building\n" + b);
                 try {
                     rate = getRating(b);

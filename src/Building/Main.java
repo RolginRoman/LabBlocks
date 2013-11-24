@@ -61,31 +61,60 @@ public class Main {
             Thread t2 = new Thread(sc);
             t1.start();
             t2.start();
-            
-            Writer fos =new FileWriter("input.txt");
-            
-            Buildings.writeBuilding(ob, fos);
-            Buildings.writeBuilding(ob, fos);
-            Buildings.writeBuilding(ob, fos);
-            Buildings.writeBuilding(ob, fos);
+
+            Writer fos = new FileWriter("input.txt");
+
+            Buildings.writeBuildingInLine(ob, fos);
+            Buildings.writeBuildingInLine(ob, fos);
+            Buildings.writeBuildingInLine(ob, fos);
+            Buildings.writeBuildingInLine(ob, fos);
+            Buildings.writeBuildingInLine(ob, fos);
+            Buildings.writeBuildingInLine(ob, fos);
             fos.close();
             System.out.println(ob.toString());
             Reader r = new FileReader("input.txt");
-            
             Building readed = Buildings.readBuilding(r);
+            Building readed1 = Buildings.readBuilding(r);
+            Building readed2 = Buildings.readBuilding(r);
+            Building readed3 = Buildings.readBuilding(r);
 
             r.close();
-            
+
             System.out.println(readed.toString());
-            
-            Writer types =new FileWriter("types.txt");
+            System.out.println(readed1.toString());
+            System.out.println(readed2.toString());
+            System.out.println(readed3.toString());
+
+            Writer types = new FileWriter("types.txt");
             PrintWriter bw = new PrintWriter(types);
             bw.println("Dwelling");
             bw.println("OfficeBuilding");
+            bw.println("Hotel");
             bw.println("Dwelling");
             bw.println("Hotel");
+            bw.println("OfficeBuilding");
             bw.flush();
             types.close();
+
+            Writer fos1 = new FileWriter("Serialinput.txt");
+
+            Buildings.writeBuildingInLine(ob, fos1);
+            Buildings.writeBuildingInLine(ob, fos1);
+            Buildings.writeBuildingInLine(ob, fos1);
+            Buildings.writeBuildingInLine(ob, fos1);
+            Buildings.writeBuildingInLine(ob, fos1);
+            Buildings.writeBuildingInLine(ob, fos1);
+            fos1.close();
+            Writer types1 = new FileWriter("Serialtypes.txt");
+            PrintWriter bw1 = new PrintWriter(types1);
+            bw1.println("Dwelling");
+            bw1.println("OfficeBuilding");
+            bw1.println("Hotel");
+            bw1.println("Dwelling");
+            bw1.println("Hotel");
+            bw1.println("OfficeBuilding");
+            bw1.flush();
+            types1.close();
         }
         catch (InvalidSpaceAreaException e) {
             System.out.println(e);

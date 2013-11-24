@@ -12,6 +12,8 @@ public class OfficeFloor implements Floor, java.io.Serializable {
 
     private class Node implements java.io.Serializable {
 
+        private Space office;
+        private Node next;
         public Node() {
             office = new Office();
         }
@@ -23,8 +25,6 @@ public class OfficeFloor implements Floor, java.io.Serializable {
         public Node(Space office) {
             this.office = office;
         }
-        private Space office;
-        private Node next;
 
         public Space getElement() {
             return office;

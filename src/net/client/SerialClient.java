@@ -1,21 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package net.client;
 
 import Building.Building;
 import Building.Buildings;
-import Building.dwelling.DwellingFactory;
-import Building.dwelling.hotel.HotelFactory;
-import Building.office.OfficeFactory;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -23,10 +23,14 @@ import java.io.Writer;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class BinaryClient {
-
-    public static void main(String[] args) throws IOException {
-        String input = "input.txt", types = "types.txt", rating = "rating.txt";
+/**
+ *
+ * @author irolg_000
+ */
+public class SerialClient {
+    public static void main(String[] args) throws IOException
+    {
+        String input = "Serialinput", types = "Serialtypes", rating = "Serialrating";
         if (args.length == 3) {
             input = args[0];
             types = args[1];
@@ -60,10 +64,11 @@ public class BinaryClient {
         Writer ratingFile = new FileWriter(rating);
         PrintWriter rateWriter = new PrintWriter(ratingFile);
         DataOutputStream toSrv = new DataOutputStream(out);
-
+        ObjectOutputStream oos = new ObjectOutputStream(out);
+        
         String type;
         Building br;
-        System.out.println(in.readUTF());
+        
         try {
             while ((type = bufTypes.readLine()) != null) {
                 try {
@@ -71,7 +76,8 @@ public class BinaryClient {
                     toSrv.flush();
                     //setFactory(type);
                     br = Buildings.readBuilding(bufInput);
-                    Buildings.outputBuilding(br, out);
+                    oos.writeObject(br);
+                    //Buildings.outputBuilding(br, out);
                     String rate = in.readUTF();
                     System.out.println(rate);
                     rateWriter.println(rate);
@@ -88,5 +94,4 @@ public class BinaryClient {
             mySocket.close();
         }
     }
-
 }
