@@ -12,7 +12,7 @@ public class HotelFloor extends DwellingFloor {
         numberStar = 1;
     }
 
-    public HotelFloor(Space[] masSpace) {
+    public HotelFloor(Space... masSpace) {
         super(masSpace);
         numberStar = 1;
     }
@@ -32,7 +32,7 @@ public class HotelFloor extends DwellingFloor {
 //        stringFloor.append(this.getClass().getSimpleName() + " ( ");
 //        stringFloor.append(this.getNumberOfSpaces());
 //        for (int i = 0; i < this.getNumberOfSpaces(); i++) {
-//            stringFloor.append(this.getOneSpace(i).toString());
+//            stringFloor.append(this.getSpaceByNum(i).toString());
 //        }
 //        return stringFloor.toString();
 //    }
@@ -43,10 +43,10 @@ public class HotelFloor extends DwellingFloor {
         stringFloor.append(this.getClass().getSimpleName());
         stringFloor.append(" (");
         for (int i = 0; i < getNumberOfSpaces() - 1; i++) {
-            stringFloor.append(getOneSpace(i));
+            stringFloor.append(getSpaceByNum(i));
             stringFloor.append(", ");
         }
-        stringFloor.append(getOneSpace(getNumberOfSpaces() - 1));
+        stringFloor.append(getSpaceByNum(getNumberOfSpaces() - 1));
         return stringFloor.append(")").toString();
     }
 
@@ -55,7 +55,7 @@ public class HotelFloor extends DwellingFloor {
             HotelFloor ofFloor = (HotelFloor) object;
             if ((this.getNumberOfSpaces() == ofFloor.getNumberOfSpaces()) && (this.getNumbStar() == ofFloor.getNumbStar())) {
                 for (int i = 0; i < ofFloor.getNumberOfSpaces(); i++) {
-                    if (!ofFloor.getOneSpace(i).equals(this.getOneSpace(i))) {
+                    if (!ofFloor.getSpaceByNum(i).equals(this.getSpaceByNum(i))) {
                         return false;
                     }
 
@@ -76,7 +76,7 @@ public class HotelFloor extends DwellingFloor {
         obj = super.clone();
 
         for (int i = 0; i < this.getNumberOfSpaces(); i++) {
-            ((OfficeFloor) obj).addFitSpace(i, this.getOneSpace(i));
+            ((OfficeFloor) obj).addFitSpace(i, this.getSpaceByNum(i));
         }
         return obj;
 
@@ -86,7 +86,7 @@ public class HotelFloor extends DwellingFloor {
     public int hashCode() {
         int code = this.getNumberOfSpaces() + this.getNumbStar();
         for (int i = 0; i < this.getNumberOfSpaces(); i++) {
-            code = (code ^ this.getOneSpace(i).hashCode());
+            code = (code ^ this.getSpaceByNum(i).hashCode());
         }
         return code;
     }

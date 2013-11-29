@@ -3,6 +3,7 @@ package Building;
 import java.io.*;
 
 import Building.dwelling.DwellingFactory;
+import MyException.ReadFromFileException;
 
 public class Buildings {
 
@@ -42,12 +43,12 @@ public class Buildings {
 
     public static void outputBuilding(Building building, OutputStream out) throws IOException {
         DataOutputStream myOut = new DataOutputStream(out);
-        myOut.writeInt(building.getNumberOfFloor());
-        for (int i = 0; i < building.getNumberOfFloor(); i++) {
-            myOut.writeInt(building.getOneFloor(i).getNumberOfSpaces());
-            for (int j = 0; j < building.getOneFloor(i).getNumberOfSpaces(); j++) {
-                myOut.writeInt(building.getOneFloor(i).getOneSpace(j).getAmtOfRoom());
-                myOut.writeDouble(building.getOneFloor(i).getOneSpace(j).getArea());
+        myOut.writeInt(building.getFloorCount());
+        for (int i = 0; i < building.getFloorCount(); i++) {
+            myOut.writeInt(building.getFloorByNum(i).getNumberOfSpaces());
+            for (int j = 0; j < building.getFloorByNum(i).getNumberOfSpaces(); j++) {
+                myOut.writeInt(building.getFloorByNum(i).getSpaceByNum(j).getAmtOfRoom());
+                myOut.writeDouble(building.getFloorByNum(i).getSpaceByNum(j).getArea());
             }
         }
         myOut.flush();
@@ -70,13 +71,13 @@ public class Buildings {
 
     public static void writeBuilding(Building building, Writer out) {
         PrintWriter pw = new PrintWriter(new BufferedWriter(out));
-        pw.println(Integer.toString(building.getNumberOfFloor()));
-        for (int i = 0; i < building.getNumberOfFloor(); i++) {
+        pw.println(Integer.toString(building.getFloorCount()));
+        for (int i = 0; i < building.getFloorCount(); i++) {
 
-            pw.println(building.getOneFloor(i).getNumberOfSpaces());
-            for (int j = 0; j < building.getOneFloor(i).getNumberOfSpaces(); j++) {
-                pw.println(building.getOneFloor(i).getOneSpace(j).getAmtOfRoom());
-                pw.println(building.getOneFloor(i).getOneSpace(j).getArea());
+            pw.println(building.getFloorByNum(i).getNumberOfSpaces());
+            for (int j = 0; j < building.getFloorByNum(i).getNumberOfSpaces(); j++) {
+                pw.println(building.getFloorByNum(i).getSpaceByNum(j).getAmtOfRoom());
+                pw.println(building.getFloorByNum(i).getSpaceByNum(j).getArea());
             }
         }
         pw.flush();
@@ -84,15 +85,15 @@ public class Buildings {
 
     public static void writeBuildingInLine(Building building, Writer out) {
         PrintWriter pw = new PrintWriter(new BufferedWriter(out));
-        pw.print(Integer.toString(building.getNumberOfFloor()));
+        pw.print(Integer.toString(building.getFloorCount()));
         pw.print(" ");
-        for (int i = 0; i < building.getNumberOfFloor(); i++) {
-            pw.print(building.getOneFloor(i).getNumberOfSpaces());
+        for (int i = 0; i < building.getFloorCount(); i++) {
+            pw.print(building.getFloorByNum(i).getNumberOfSpaces());
             pw.print(" ");
-            for (int j = 0; j < building.getOneFloor(i).getNumberOfSpaces(); j++) {
-                pw.print(building.getOneFloor(i).getOneSpace(j).getAmtOfRoom());
+            for (int j = 0; j < building.getFloorByNum(i).getNumberOfSpaces(); j++) {
+                pw.print(building.getFloorByNum(i).getSpaceByNum(j).getAmtOfRoom());
                 pw.print(" ");
-                pw.print(building.getOneFloor(i).getOneSpace(j).getArea());
+                pw.print(building.getFloorByNum(i).getSpaceByNum(j).getArea());
                 pw.print(" ");
             }
         }
@@ -117,15 +118,21 @@ public class Buildings {
 //        Building building = createBuild(massFloor);//new OfficeBuilding(massFloor);
 //        return building;
 //    }
-    public static Building readBuilding(Reader in) throws IOException {
+    public static Building readBuilding(Reader in) throws IOException, ReadFromFileException  {
         StreamTokenizer st = new StreamTokenizer(in);
         do {
             st.nextToken();
+            if (st.ttype == StreamTokenizer.TT_EOF) {
+                throw new ReadFromFileException();
+            }
         } while (st.ttype != StreamTokenizer.TT_NUMBER);
         Floor[] massFloor = new Floor[(int) st.nval];
         for (int i = 0; i < massFloor.length; i++) {
             do {
                 st.nextToken();
+                if (st.ttype == StreamTokenizer.TT_EOF) {
+                    throw new ReadFromFileException();
+                }
             } while (st.ttype != StreamTokenizer.TT_NUMBER);
             Space[] massSpace = new Space[(int) st.nval];
             int numOfRooms;
@@ -133,10 +140,16 @@ public class Buildings {
             for (int j = 0; j < massSpace.length; j++) {
                 do {
                     st.nextToken();
+                    if (st.ttype == StreamTokenizer.TT_EOF) {
+                        throw new ReadFromFileException();
+                    }
                 } while (st.ttype != StreamTokenizer.TT_NUMBER);
                 numOfRooms = (int) st.nval;
                 do {
                     st.nextToken();
+                    if (st.ttype == StreamTokenizer.TT_EOF) {
+                        throw new ReadFromFileException();
+                    }
                 } while (st.ttype != StreamTokenizer.TT_NUMBER);
                 square = st.nval;
                 Space s = createSpace(numOfRooms, square);

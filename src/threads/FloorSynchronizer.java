@@ -23,7 +23,7 @@ public class FloorSynchronizer {
                 lock.wait();
             }
 
-            System.out.println("Cleaning room number  " + val + " with total area " + floor.getOneSpace(val).getArea() + " square meters ");
+            System.out.println("Cleaning room number  " + val + " with total area " + floor.getSpaceByNum(val).getArea() + " square meters ");
             set = false;
             lock.notifyAll();
         }
@@ -39,7 +39,7 @@ public class FloorSynchronizer {
                 lock.wait();
             }
 
-            System.out.println("Repairing space number " + val + " with total area " + floor.getOneSpace(val).getArea() + " square meters ");
+            System.out.println("Repairing space number " + val + " with total area " + floor.getSpaceByNum(val).getArea() + " square meters ");
             set = true;
             lock.notifyAll();
         }

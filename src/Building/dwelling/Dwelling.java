@@ -3,7 +3,6 @@ package Building.dwelling;
 import java.util.Iterator;
 
 import Building.Building;
-import Building.BuildingIterator;
 import Building.Floor;
 import Building.Space;
 import Building.office.OfficeFloor;
@@ -18,17 +17,17 @@ public class Dwelling implements Building, java.io.Serializable {
         this.allDwellingFloor = new DwellingFloor[numberFloor];
     }
 
-    public Dwelling(Floor[] allDwellingFloor) {
+    public Dwelling(Floor... allDwellingFloor) {
         this.allDwellingFloor = allDwellingFloor;
         numberFloor = allDwellingFloor.length;
     }
 
-    public int getNumberOfFloor() {
+    public int getFloorCount() {
         return numberFloor;
     }
 
     @Override
-    public int getNumberSpaceOfBuilding() {
+    public int getSpacesCount() {
         int number = 0;
         for (int i = 0; i < numberFloor; i++) {
             try {
@@ -42,16 +41,16 @@ public class Dwelling implements Building, java.io.Serializable {
     }
 
     @Override
-    public double getAllAreaOfBuilding() throws NullPointerException {
+    public double getTotalArea() throws NullPointerException {
         int area = 0;
         for (int i = 0; i < numberFloor; i++) {
-            area += allDwellingFloor[i].getAllAreaOfFloor();
+            area += allDwellingFloor[i].getTotalArea();
         }
         return area;
     }
 
     @Override
-    public int getNumberRoomsOfBuilding() {
+    public int getRoomsCount() {
         int number = 0;
         for (int i = 0; i < numberFloor; i++) {
             number += allDwellingFloor[i].getNumberRoomsOfSpaces();
@@ -65,12 +64,12 @@ public class Dwelling implements Building, java.io.Serializable {
     }
 
     @Override
-    public Floor getOneFloor(int i) {
+    public Floor getFloorByNum(int i) {
         return allDwellingFloor[i];
     }
 
     @Override
-    public Space getOneSpace(int number) {
+    public Space getSpaceByNum(int number) {
         int count = 0;
 
         for (int i = 0; i < allDwellingFloor.length; i++) {
@@ -79,7 +78,7 @@ public class Dwelling implements Building, java.io.Serializable {
                     .getNumberOfSpaces())))// �� ���� �� �����
             // ��������� ��������?
             {
-                return allDwellingFloor[i].getOneSpace(number - count);
+                return allDwellingFloor[i].getSpaceByNum(number - count);
             } else {
                 count += allDwellingFloor[i].getNumberOfSpaces();
             }
@@ -162,7 +161,7 @@ public class Dwelling implements Building, java.io.Serializable {
 
     @Override
     public Space[] sortSpace() {
-        Space[] massFlat = new Flat[this.getNumberSpaceOfBuilding()];
+        Space[] massFlat = new Flat[this.getSpacesCount()];
 
         Space lastMaxFlat = new Flat(2, this.getBestSpace().getArea());
         double max = 0;
@@ -170,16 +169,16 @@ public class Dwelling implements Building, java.io.Serializable {
             max = 0;
             for (int i = 0; i < allDwellingFloor.length; i++) {
                 for (int j = 0; j < allDwellingFloor[i].getNumberOfSpaces(); j++) {
-                    if ((allDwellingFloor[i].getOneSpace(j).getArea() >= max)
-                            && (allDwellingFloor[i].getOneSpace(j)
+                    if ((allDwellingFloor[i].getSpaceByNum(j).getArea() >= max)
+                            && (allDwellingFloor[i].getSpaceByNum(j)
                             .getArea() <= lastMaxFlat.getArea())
                             && (lastMaxFlat != allDwellingFloor[i]
-                            .getOneSpace(j))) {
+                            .getSpaceByNum(j))) {
 
-                        max = allDwellingFloor[i].getOneSpace(j)
+                        max = allDwellingFloor[i].getSpaceByNum(j)
                                 .getArea();// ���������� ������������ �� ������
                         // ������
-                        massFlat[k] = allDwellingFloor[i].getOneSpace(j);
+                        massFlat[k] = allDwellingFloor[i].getSpaceByNum(j);
                     }
                 }
             }
@@ -194,26 +193,26 @@ public class Dwelling implements Building, java.io.Serializable {
 
     @Override
     public Iterator iterator() {
-        return new BuildingIterator(this);
+        return new BuildingIterator();
     }
 
     public String toString() {
         StringBuilder stringFloor = new StringBuilder();
         stringFloor.append(this.getClass().getSimpleName() + " (");
-        for (int i = 0; i < this.getNumberOfFloor() - 1; i++) {
-            stringFloor.append(this.getOneFloor(i).toString());
+        for (int i = 0; i < this.getFloorCount() - 1; i++) {
+            stringFloor.append(this.getFloorByNum(i).toString());
             stringFloor.append(", ");
         }
-        stringFloor.append(getOneFloor(getNumberOfFloor() - 1));
+        stringFloor.append(getFloorByNum(getFloorCount() - 1));
         return stringFloor.append(")").toString();
     }
 
     public boolean equals(Object object) {
         if (object != null) {
             Building buil = (Building) object;
-            if (this.getNumberOfFloor() == buil.getNumberOfFloor()) {
-                for (int i = 0; i < buil.getNumberOfFloor(); i++) {
-                    if (!buil.getOneFloor(i).equals(this.getOneFloor(i))) {
+            if (this.getFloorCount() == buil.getFloorCount()) {
+                for (int i = 0; i < buil.getFloorCount(); i++) {
+                    if (!buil.getFloorByNum(i).equals(this.getFloorByNum(i))) {
                         return false;
                     }
 
@@ -232,8 +231,8 @@ public class Dwelling implements Building, java.io.Serializable {
 
         try {
             obj = super.clone();
-            for (int i = 0; i < this.getNumberOfFloor(); i++) {
-                ((Dwelling) obj).changeFloor(i, (Floor) this.getOneFloor(i).clone());
+            for (int i = 0; i < this.getFloorCount(); i++) {
+                ((Dwelling) obj).changeFloor(i, (Floor) this.getFloorByNum(i).clone());
             }
             return obj;
         }
@@ -247,10 +246,32 @@ public class Dwelling implements Building, java.io.Serializable {
 
     @Override
     public int hashCode() {
-        int code = this.getNumberOfFloor();
-        for (int i = 0; i < this.getNumberOfFloor(); i++) {
-            code = (code ^ this.getOneFloor(i).hashCode());
+        int code = this.getFloorCount();
+        for (int i = 0; i < this.getFloorCount(); i++) {
+            code = (code ^ this.getFloorByNum(i).hashCode());
         }
         return code;
+    }
+
+    private class BuildingIterator implements Iterator<Floor> {
+
+        int index = 0;
+
+        @Override
+        public Floor next() {
+            return allDwellingFloor[index++];
+
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index != allDwellingFloor.length;
+        }
+
+        @Override
+        public void remove() {
+            // TODO Auto-generated method stub
+
+        }
     }
 }

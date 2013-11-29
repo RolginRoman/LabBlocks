@@ -22,18 +22,18 @@ public class SynchronizedFloor implements Floor{
 	}
 
 	@Override
-	public synchronized double getAllAreaOfFloor() {
-		return floor.getAllAreaOfFloor();
+	public synchronized double getTotalArea() {
+		return floor.getTotalArea();
 	}
 
 	@Override
-	public synchronized Space[] getMassSpaces() {
-		return floor.getMassSpaces();
+	public synchronized Space[] getSpacesArray() {
+		return floor.getSpacesArray();
 	}
 
 	@Override
-	public synchronized Space getOneSpace(int number) {
-		return floor.getOneSpace(number);
+	public synchronized Space getSpaceByNum(int number) {
+		return floor.getSpaceByNum(number);
 	}
 
 	@Override

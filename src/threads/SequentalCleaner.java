@@ -17,7 +17,7 @@ public class SequentalCleaner implements Runnable {
 
         for (int i = 0; i < floor.getNumberOfSpaces(); i++) {
             fs.beginClean();
-            System.out.println(String.format("Cleaned: Space #%d with space %.2f", i, floor.getOneSpace(i).getArea()));
+            System.out.println(String.format("Cleaned: Space #%d with space %.2f", i, floor.getSpaceByNum(i).getArea()));
             fs.endClean();
         }
 

@@ -17,7 +17,7 @@ public class SequentalRepairer implements Runnable {
 
         for (int i = 0; i < floor.getNumberOfSpaces(); i++) {
             fs.beginRepair();
-            System.out.println(String.format("Repaired: Space #%d with space %.2f", i, floor.getOneSpace(i).getArea()));
+            System.out.println(String.format("Repaired: Space #%d with space %.2f", i, floor.getSpaceByNum(i).getArea()));
             fs.endRepair();
         }
     }

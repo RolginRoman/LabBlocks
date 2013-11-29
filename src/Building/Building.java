@@ -1,39 +1,38 @@
 package Building;
 
-
 public interface Building {
 
-	public abstract int getNumberOfFloor();
+    public int getFloorCount();
 
-	public abstract int getNumberSpaceOfBuilding();
+    public int getSpacesCount();
 
-	public abstract double getAllAreaOfBuilding();
+    public double getTotalArea();
 
-	public abstract int getNumberRoomsOfBuilding();
+    public int getRoomsCount();
 
-	public abstract Floor[] getMassFloor();
+    public Floor[] getMassFloor();
 
-	public abstract Floor getOneFloor(int number);
+    public Floor getFloorByNum(int number);
 
-	//public abstract void changeSpace(int number, Floor newFloor);
+	//public   void changeSpace(int number, Floor newFloor);
+    public Space getSpaceByNum(int number);
 
-	public abstract Space getOneSpace(int number);
+    public void changeSpace(int number, Space newOffice);
 
-	public abstract void changeSpace(int number, Space newOffice);
-	public abstract void changeFloor(int number, Floor newFloor);
+    public void changeFloor(int number, Floor newFloor);
 
-	public abstract void addSpace(int number, Space newOffice)
-			throws FloorIndexOutOfBoundsException;
+    public void addSpace(int number, Space newOffice)
+            throws FloorIndexOutOfBoundsException;
 
-	public abstract void deleteSpace(int number)
-			throws FloorIndexOutOfBoundsException;
+    public void deleteSpace(int number)
+            throws FloorIndexOutOfBoundsException;
 
-	public abstract Space getBestSpace();
+    public Space getBestSpace();
 
-	public abstract Space[] sortSpace();
-	
-    public 	Object clone();
-	
-	java.util.Iterator iterator();
+    public Space[] sortSpace();
+
+    public Object clone();
+
+    java.util.Iterator iterator();
 
 }

@@ -14,7 +14,7 @@ public class PlacementExchanger {
 	
 	public static boolean mayFloorExchange(Floor f1, Floor f2)
 	{
-		if(( f1.getNumberOfSpaces() == f2.getNumberOfSpaces() ) && (f1.getAllAreaOfFloor() == f2.getAllAreaOfFloor() ))
+		if(( f1.getNumberOfSpaces() == f2.getNumberOfSpaces() ) && (f1.getTotalArea() == f2.getTotalArea() ))
 		{
 			return true;
 		}
@@ -29,12 +29,12 @@ public class PlacementExchanger {
 
 		if(index2>floor2.getNumberOfSpaces()||index2<0)
 			throw new SpaceIndexOutOfBoundsException(index2);
-		if(!PlacementExchanger.maySpaceExchange(floor1.getOneSpace(index1), floor2.getOneSpace(index2)))
+		if(!PlacementExchanger.maySpaceExchange(floor1.getSpaceByNum(index1), floor2.getSpaceByNum(index2)))
 			throw new InexchangeableSpacesException(index1, index2);
 		else 
 		{
-			Space exSpace = floor2.getOneSpace(index2);
-			floor2.changeSpace(index2, floor1.getOneSpace(index1));
+			Space exSpace = floor2.getSpaceByNum(index2);
+			floor2.changeSpace(index2, floor1.getSpaceByNum(index1));
 			floor1.changeSpace(index1, exSpace);
 		}
 		
@@ -43,18 +43,18 @@ public class PlacementExchanger {
 	public static void exchangeBuildingFloors(Building building1, int index1, Building building2, int index2) 
 			throws InexchangeableFloorsException
 	{
-		if(index1>building1.getNumberOfFloor()||index1<0)
+		if(index1>building1.getFloorCount()||index1<0)
 			throw new FloorIndexOutOfBoundsException(index1); 
 
-		if(index2>building2.getNumberOfFloor()||index2<0)
+		if(index2>building2.getFloorCount()||index2<0)
 			throw new FloorIndexOutOfBoundsException(index2);
-		if(!PlacementExchanger.mayFloorExchange(building1.getOneFloor(index1), building2.getOneFloor(index2))){
+		if(!PlacementExchanger.mayFloorExchange(building1.getFloorByNum(index1), building2.getFloorByNum(index2))){
 			throw new InexchangeableFloorsException(index1, index2);
 		}
 			else
 			{
-				Floor exFloor = building2.getOneFloor(index2);
-				building2.changeFloor(index2, building1.getOneFloor(index1));
+				Floor exFloor = building2.getFloorByNum(index2);
+				building2.changeFloor(index2, building1.getFloorByNum(index1));
 				building1.changeFloor(index1, exFloor);
 			}
 		}

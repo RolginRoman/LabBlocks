@@ -3,7 +3,6 @@ package Building.office;
 import java.util.Iterator;
 
 import Building.Building;
-import Building.BuildingIterator;
 import Building.Floor;
 import Building.FloorIndexOutOfBoundsException;
 import Building.Space;
@@ -57,6 +56,28 @@ public class OfficeBuilding implements Building, java.io.Serializable {
             previous = n;
         }
     }
+    
+    private class BuildingIterator implements Iterator<Floor> {
+
+    int index = 0;
+
+    @Override
+    public Floor next() {
+        return getFloorByNum(index++);
+
+    }
+
+    @Override
+    public boolean hasNext() {
+        return index != getFloorCount();
+    }
+
+    @Override
+    public void remove() {
+	// TODO Auto-generated method stub
+
+    }
+}
 
     public OfficeBuilding(int numberOfFloor, int[] floorMass) {
 
@@ -75,7 +96,7 @@ public class OfficeBuilding implements Building, java.io.Serializable {
         }
     }
 
-    public OfficeBuilding(Floor[] masFloor) {
+    public OfficeBuilding(Floor... masFloor) {
         numberOfFloor = masFloor.length;
         head = new Node();
         head.setElement(masFloor[0]);
@@ -136,10 +157,10 @@ public class OfficeBuilding implements Building, java.io.Serializable {
     }
 
     /* (non-Javadoc)
-     * @see Building.Building#getNumberOfFloor()
+     * @see Building.Building#getFloorCount()
      */
     @Override
-    public int getNumberOfFloor() {
+    public int getFloorCount() {
         if (head != null) {
             Node node = head;
             int number = 1;
@@ -157,11 +178,11 @@ public class OfficeBuilding implements Building, java.io.Serializable {
      * @see Building.Building#getNumberOfficeOfBuilding()
      */
     @Override
-    public int getNumberSpaceOfBuilding() {
+    public int getSpacesCount() {
         if (head != null) {
             int number = 0;
             Node node = head;
-            for (int i = 0; i < this.getNumberOfFloor(); i++) {
+            for (int i = 0; i < this.getFloorCount(); i++) {
                 number += node.getElement().getNumberOfSpaces();
                 node = node.getNext();
             }
@@ -172,15 +193,15 @@ public class OfficeBuilding implements Building, java.io.Serializable {
     }
 
     /* (non-Javadoc)
-     * @see Building.Building#getAllAreaOfBuilding()
+     * @see Building.Building#getTotalArea()
      */
     @Override
-    public double getAllAreaOfBuilding() {
+    public double getTotalArea() {
         if (head != null) {
             int area = 0;
             Node node = head;
-            for (int i = 0; i < this.getNumberOfFloor(); i++) {
-                area += node.getElement().getAllAreaOfFloor();
+            for (int i = 0; i < this.getFloorCount(); i++) {
+                area += node.getElement().getTotalArea();
                 node = node.getNext();
             }
             return area;
@@ -190,14 +211,14 @@ public class OfficeBuilding implements Building, java.io.Serializable {
     }
 
     /* (non-Javadoc)
-     * @see Building.Building#getNumberRoomsOfBuilding()
+     * @see Building.Building#getRoomsCount()
      */
     @Override
-    public int getNumberRoomsOfBuilding() {
+    public int getRoomsCount() {
         if (head != null) {
             int number = 0;
             Node node = head;
-            for (int i = 0; i < this.getNumberOfFloor(); i++) {
+            for (int i = 0; i < this.getFloorCount(); i++) {
                 number += node.getElement().getNumberRoomsOfSpaces();
                 node = node.getNext();
             }
@@ -212,11 +233,11 @@ public class OfficeBuilding implements Building, java.io.Serializable {
      */
     @Override
     public Floor[] getMassFloor() {
-        Floor[] floorMas = new Floor[this.getNumberOfFloor()];
+        Floor[] floorMas = new Floor[this.getFloorCount()];
         if (head != null) {
             floorMas[0] = head.getElement();
             Node node = head;
-            for (int i = 1; i < this.getNumberOfFloor(); i++) {
+            for (int i = 1; i < this.getFloorCount(); i++) {
                 node = node.getNext();
                 floorMas[i] = node.getElement();
             }
@@ -226,12 +247,12 @@ public class OfficeBuilding implements Building, java.io.Serializable {
         }
     }
     /* (non-Javadoc)
-     * @see Building.Building#getOneFloor(int)
+     * @see Building.Building#getFloorByNum(int)
      */
 
     @Override
-    public Floor getOneFloor(int number) {
-        if (this.getNumberOfFloor() <= number || number < 0) {
+    public Floor getFloorByNum(int number) {
+        if (this.getFloorCount() <= number || number < 0) {
             throw new FloorIndexOutOfBoundsException(number);
         }
         return this.getFloor(number).getElement();
@@ -242,7 +263,7 @@ public class OfficeBuilding implements Building, java.io.Serializable {
      */
     @Override
     public void changeFloor(int number, Floor newFloor) {
-        if (this.getNumberOfFloor() <= number || number < 0) {
+        if (this.getFloorCount() <= number || number < 0) {
             throw new FloorIndexOutOfBoundsException(number);
         }
         Node node = new Node(newFloor);
@@ -259,15 +280,15 @@ public class OfficeBuilding implements Building, java.io.Serializable {
      * @see Building.Building#getOneOffice(int)
      */
     @Override
-    public Space getOneSpace(int number) {
-        if (this.getNumberOfFloor() <= number || number < 0) {
+    public Space getSpaceByNum(int number) {
+        if (this.getFloorCount() <= number || number < 0) {
             throw new FloorIndexOutOfBoundsException(number);
         }
         int count = 0;
         Node node = head;
-        for (int i = 0; i < this.getNumberOfFloor(); i++) {
+        for (int i = 0; i < this.getFloorCount(); i++) {
             if ((number > count) && (number < count + node.getElement().getNumberOfSpaces())) {
-                return node.getElement().getOneSpace(number - count);
+                return node.getElement().getSpaceByNum(number - count);
             }
             count += node.getElement().getNumberOfSpaces();
             node = node.getNext();
@@ -281,12 +302,12 @@ public class OfficeBuilding implements Building, java.io.Serializable {
      */
     @Override
     public void changeSpace(int number, Space newOffice) {
-        if (this.getNumberOfFloor() <= number || number < 0) {
+        if (this.getFloorCount() <= number || number < 0) {
             throw new FloorIndexOutOfBoundsException(number);
         }
         int count = 0;
         Node node = head;
-        for (int i = 0; i < this.getNumberOfFloor(); i++) {
+        for (int i = 0; i < this.getFloorCount(); i++) {
             if ((number > count) && (number < count + node.getElement().getNumberOfSpaces())) {
                 node.getElement().changeSpace(number - count, newOffice);
                 break;
@@ -303,12 +324,12 @@ public class OfficeBuilding implements Building, java.io.Serializable {
      */
     @Override
     public void addSpace(int number, Space newOffice) {
-        if (this.getNumberOfFloor() <= number || number < 0) {
+        if (this.getFloorCount() <= number || number < 0) {
             throw new FloorIndexOutOfBoundsException(number);
         }
         int count = 0;
         Node node = head;
-        for (int i = 0; i < this.getNumberOfFloor(); i++) {
+        for (int i = 0; i < this.getFloorCount(); i++) {
             if ((number > count) && (number < count + node.getElement().getNumberOfSpaces())) {
                 node.getElement().addFitSpace(number, newOffice);
                 break;
@@ -323,12 +344,12 @@ public class OfficeBuilding implements Building, java.io.Serializable {
 
     @Override
     public void deleteSpace(int number) {
-        if (this.getNumberOfFloor() <= number || number < 0) {
+        if (this.getFloorCount() <= number || number < 0) {
             throw new FloorIndexOutOfBoundsException(number);
         }
         int count = 0;
         Node node = head;
-        for (int i = 0; i < this.getNumberOfFloor(); i++) {
+        for (int i = 0; i < this.getFloorCount(); i++) {
             if ((number > count) && (number < count + node.getElement().getNumberOfSpaces())) {
                 node.getElement().deleteSpace(number);
                 break;
@@ -346,7 +367,7 @@ public class OfficeBuilding implements Building, java.io.Serializable {
         double maxArea = 0;
         Node node = head;
         Space maxAreaOffice = new Office();
-        for (int i = 0; i < this.getNumberOfFloor(); i++) {
+        for (int i = 0; i < this.getFloorCount(); i++) {
             if (node.getElement().getBestSpace().getArea() > maxArea) {
                 maxArea = node.getElement().getBestSpace().getArea();
                 maxAreaOffice = node.getElement().getBestSpace();
@@ -361,16 +382,16 @@ public class OfficeBuilding implements Building, java.io.Serializable {
      */
     @Override
     public Space[] sortSpace() {
-        Space[] sortMasOffice = new Space[this.getNumberSpaceOfBuilding()];
+        Space[] sortMasOffice = new Space[this.getSpacesCount()];
         double maxArea = 0;
 
-        for (int i = 0; i < this.getNumberSpaceOfBuilding(); i++) {
+        for (int i = 0; i < this.getSpacesCount(); i++) {
             maxArea = 0;
-            for (int j = 0; j < this.getNumberOfFloor(); j++) {
+            for (int j = 0; j < this.getFloorCount(); j++) {
                 for (int k = 0; k < this.getFloor(j).getElement().getNumberOfSpaces(); k++) {
-                    if ((maxArea <= this.getFloor(j).getElement().getOneSpace(k).getArea()) && (this.proverk(sortMasOffice, this.getFloor(j).getElement().getOneSpace(k)))) {
-                        maxArea = this.getFloor(j).getElement().getOneSpace(k).getArea();
-                        sortMasOffice[i] = this.getFloor(j).getElement().getOneSpace(k);
+                    if ((maxArea <= this.getFloor(j).getElement().getSpaceByNum(k).getArea()) && (this.proverk(sortMasOffice, this.getFloor(j).getElement().getSpaceByNum(k)))) {
+                        maxArea = this.getFloor(j).getElement().getSpaceByNum(k).getArea();
+                        sortMasOffice[i] = this.getFloor(j).getElement().getSpaceByNum(k);
                     }
                 }
             }
@@ -391,7 +412,7 @@ public class OfficeBuilding implements Building, java.io.Serializable {
 
     @Override
     public Iterator iterator() {
-        return new BuildingIterator(this);
+        return new BuildingIterator();
     }
 
     @Override
@@ -399,8 +420,8 @@ public class OfficeBuilding implements Building, java.io.Serializable {
         StringBuilder stringFloor = new StringBuilder();
         stringFloor.append(getClass().getSimpleName());
         stringFloor.append(" ( ");
-        for (int i = 0; i < getNumberOfFloor(); i++) {
-            stringFloor.append(getOneFloor(i).toString());
+        for (int i = 0; i < getFloorCount(); i++) {
+            stringFloor.append(getFloorByNum(i).toString());
         }
         return stringFloor.toString();
     }
@@ -409,9 +430,9 @@ public class OfficeBuilding implements Building, java.io.Serializable {
     public boolean equals(Object object) {
         if (object != null) {
             Building buil = (Building) object;
-            if (this.getNumberOfFloor() == buil.getNumberOfFloor()) {
-                for (int i = 0; i < buil.getNumberOfFloor(); i++) {
-                    if (!buil.getOneFloor(i).equals(this.getOneFloor(i))) {
+            if (this.getFloorCount() == buil.getFloorCount()) {
+                for (int i = 0; i < buil.getFloorCount(); i++) {
+                    if (!buil.getFloorByNum(i).equals(this.getFloorByNum(i))) {
                         return false;
                     }
 
@@ -430,8 +451,8 @@ public class OfficeBuilding implements Building, java.io.Serializable {
 
         try {
             obj = super.clone();
-            for (int i = 0; i < this.getNumberOfFloor(); i++) {
-                ((OfficeBuilding) obj).changeFloor(i, (Floor) this.getOneFloor(i).clone());
+            for (int i = 0; i < this.getFloorCount(); i++) {
+                ((OfficeBuilding) obj).changeFloor(i, (Floor) this.getFloorByNum(i).clone());
             }
             return obj;
         }
@@ -445,9 +466,9 @@ public class OfficeBuilding implements Building, java.io.Serializable {
 
     @Override
     public int hashCode() {
-        int code = this.getNumberOfFloor();
-        for (int i = 0; i < this.getNumberOfFloor(); i++) {
-            code = (code ^ this.getOneFloor(i).hashCode());
+        int code = this.getFloorCount();
+        for (int i = 0; i < this.getFloorCount(); i++) {
+            code = (code ^ this.getFloorByNum(i).hashCode());
         }
         return code;
     }

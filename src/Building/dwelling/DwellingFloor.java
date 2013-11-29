@@ -3,117 +3,148 @@ package Building.dwelling;
 import java.util.Iterator;
 
 import Building.Floor;
-import Building.FloorIterator;
 import Building.Space;
 import Building.office.OfficeFloor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DwellingFloor implements Floor, java.io.Serializable {
 
+//   private int numberFlatOfFloor;
+ //   private Space[] flatOfFloor;
+    private List<Space> spaces = new ArrayList<>();
+
     public DwellingFloor(int numberFlatOfFloor) {
-        this.numberFlatOfFloor = numberFlatOfFloor;
-        this.flatOfFloor = new Flat[numberFlatOfFloor];
+        for (int i=0;i<numberFlatOfFloor;i++)
+            spaces.add(new Flat());
     }
 
-    public DwellingFloor(Space[] flatOfFloor) {
-        this.flatOfFloor = flatOfFloor;
-        numberFlatOfFloor = flatOfFloor.length;
+    public DwellingFloor(Space... flatOfFloor) {
+        spaces.addAll(Arrays.asList(flatOfFloor));
     }
-
-    private int numberFlatOfFloor;
-    private Space flatOfFloor[];
 
     @Override
     public int getNumberOfSpaces() {
-        return numberFlatOfFloor;
+        return spaces.size();
     }
 
     @Override
-    public double getAllAreaOfFloor() {
+    public double getTotalArea() {
         double area = 0;
-        for (int i = 0; i < numberFlatOfFloor; i++) {
-            area = area + flatOfFloor[i].getArea();
+        Iterator<Space> iter = spaces.iterator();
+        while (iter.hasNext()) {
+            area += iter.next().getArea();
         }
+//        for (int i = 0; i < numberFlatOfFloor; i++) {
+//            area += flatOfFloor[i].getArea();
+//        }
         return area;
     }
 
     @Override
     public int getNumberRoomsOfSpaces() {
         int amt = 0;
-        for (int i = 0; i < numberFlatOfFloor; i++) {
-            amt = amt + flatOfFloor[i].getAmtOfRoom();
+        Iterator<Space> iter = spaces.iterator();
+        while (iter.hasNext()) {
+            amt += iter.next().getAmtOfRoom();
         }
+//        for (int i = 0; i < numberFlatOfFloor; i++) {
+//            amt = amt + flatOfFloor[i].getAmtOfRoom();
+//        }
         return amt;
     }
 
     @Override
-    public Space[] getMassSpaces() {
-        return flatOfFloor;
+    public Space[] getSpacesArray() {
+        Space[] sps = new Space[spaces.size()];
+        return spaces.toArray(sps);
     }
 
     @Override
-    public Space getOneSpace(int i) {
-        return flatOfFloor[i];
+    public Space getSpaceByNum(int i) {
+        if (i > spaces.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        return spaces.get(i);
+        //return flatOfFloor[i];
     }
 
     @Override
     public void changeSpace(int i, Space newFlat) {
-        flatOfFloor[i].setArea(newFlat.getArea());
-        flatOfFloor[i].setAmtOfRoom(newFlat.getAmtOfRoom());
+        spaces.set(i, newFlat);
     }
 
     @Override
     public void deleteSpace(int index)// �� ������ � ������������
     {
-        Space[] newFlatsOfLloor = new Flat[flatOfFloor.length - 1];
-        int j = 0;
-        for (int i = 0; i < flatOfFloor.length; i++) {
-            if (i != index) {
-                newFlatsOfLloor[j] = flatOfFloor[i];
-                j++;
-            }
-
+        if (index > spaces.size()) {
+            throw new IndexOutOfBoundsException();
         }
-        flatOfFloor = newFlatsOfLloor;
+        spaces.remove(index);
+//        Space[] newFlatsOfLloor = new Flat[flatOfFloor.length - 1];
+//        int j = 0;
+//        for (int i = 0; i < flatOfFloor.length; i++) {
+//            if (i != index) {
+//                newFlatsOfLloor[j] = flatOfFloor[i];
+//                j++;
+//            }
+//
+//        }
+//        flatOfFloor = newFlatsOfLloor;
     }
 
     @Override
     public void addFitSpace(int index, Space newFlat) {
-        Space[] newFlatsOfLloor = new Flat[flatOfFloor.length + 1];
-        int j = 0;
-        for (int i = 0; i < flatOfFloor.length; i++) {
-
-            if (i == index) {
-                newFlatsOfLloor[j] = newFlat;
-                j++;
-            }
-
-            newFlatsOfLloor[j] = flatOfFloor[i];
+        if (index > spaces.size()) {
+            throw new IndexOutOfBoundsException();
         }
-        flatOfFloor = newFlatsOfLloor;
+        spaces.add(index, newFlat);
+//        Space[] newFlatsOfLloor = new Flat[flatOfFloor.length + 1];
+//        int j = 0;
+//        for (int i = 0; i < flatOfFloor.length; i++) {
+//
+//            if (i == index) {
+//                newFlatsOfLloor[j] = newFlat;
+//                j++;
+//            }
+//
+//            newFlatsOfLloor[j] = flatOfFloor[i];
+//        }
+//        flatOfFloor = newFlatsOfLloor;
     }
 
     @Override
     public Space getBestSpace() {
         double area = 0;
-        int numbFlat = 0;
-        for (int i = 0; i < flatOfFloor.length; i++) {
-            if (flatOfFloor[i].getArea() > area) {
-                numbFlat = i;
-                area = flatOfFloor[i].getArea();
+        Iterator<Space> iter = spaces.iterator();
+        Space cur,res=spaces.get(0);
+        while (iter.hasNext()) {
+            if ((cur=iter.next()).getArea() > area);
+            {
+                res=cur;
             }
         }
-        return flatOfFloor[0];
+        return res;
+//        double area = 0;
+//        int numbFlat = 0;
+//        for (int i = 0; i < flatOfFloor.length; i++) {
+//            if (flatOfFloor[i].getArea() > area) {
+//                numbFlat = i;
+//                area = flatOfFloor[i].getArea();
+//            }
+//        }
+//        return flatOfFloor[numbFlat];
     }
 
     @Override
     public void addNewSpace(int number) {
-
     }
 
     @Override
     public Iterator iterator() {
 
-        return new FloorIterator(this);
+        return spaces.iterator();
     }
 
     @Override
@@ -122,10 +153,10 @@ public class DwellingFloor implements Floor, java.io.Serializable {
         stringFloor.append(this.getClass().getSimpleName());
         stringFloor.append(" (");
         for (int i = 0; i < getNumberOfSpaces() - 1; i++) {
-            stringFloor.append(getOneSpace(i));
+            stringFloor.append(getSpaceByNum(i));
             stringFloor.append(", ");
         }
-        stringFloor.append(getOneSpace(getNumberOfSpaces() - 1));
+        stringFloor.append(getSpaceByNum(getNumberOfSpaces() - 1));
         return stringFloor.append(")").toString();
     }
 
@@ -134,7 +165,7 @@ public class DwellingFloor implements Floor, java.io.Serializable {
             Floor ofFloor = (Floor) object;
             if (this.getNumberOfSpaces() == ofFloor.getNumberOfSpaces()) {
                 for (int i = 0; i < ofFloor.getNumberOfSpaces(); i++) {
-                    if (!ofFloor.getOneSpace(i).equals(this.getOneSpace(i))) {
+                    if (!ofFloor.getSpaceByNum(i).equals(this.getSpaceByNum(i))) {
                         return false;
                     }
 
@@ -153,9 +184,6 @@ public class DwellingFloor implements Floor, java.io.Serializable {
 
         try {
             obj = super.clone();
-            for (int i = 0; i < this.getNumberOfSpaces(); i++) {
-                ((OfficeFloor) obj).addFitSpace(i, (Space) this.getOneSpace(i).clone());
-            }
             return obj;
         }
         catch (CloneNotSupportedException e) {
@@ -170,9 +198,30 @@ public class DwellingFloor implements Floor, java.io.Serializable {
     public int hashCode() {
         int code = this.getNumberOfSpaces();
         for (int i = 0; i < this.getNumberOfSpaces(); i++) {
-            code = (code ^ this.getOneSpace(i).hashCode());
+            code = (code ^ this.getSpaceByNum(i).hashCode());
         }
         return code;
     }
+
+//    private class FloorIterator implements Iterator<Space> {
+//
+//        int index = 0;
+//
+//        @Override
+//        public Space next() {
+//            return flatOfFloor[index++];
+//        }
+//
+//        @Override
+//        public boolean hasNext() {
+//            return index != flatOfFloor.length;
+//        }
+//
+//        @Override
+//        public void remove() {
+//            // TODO Auto-generated method stub
+//
+//        }
+//    }
 
 }

@@ -6,16 +6,11 @@ import Building.dwelling.DwellingFactory;
 import Building.dwelling.hotel.HotelFactory;
 import Building.office.OfficeFactory;
 import MyException.BuildingUnderArrestException;
-import com.sun.org.apache.bcel.internal.util.ByteSequence;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
@@ -85,7 +80,7 @@ public class BinaryServer {
             System.out.println("This building has been arrested");
             throw new BuildingUnderArrestException();
         }
-        double rate = b.getAllAreaOfBuilding();
+        double rate = b.getTotalArea();
         switch (b.getClass().getSimpleName()) {
             case "Dwelling": {
                 System.out.println("Server gets dwelling building");

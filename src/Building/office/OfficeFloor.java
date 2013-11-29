@@ -3,7 +3,6 @@ package Building.office;
 import java.util.Iterator;
 
 import Building.Floor;
-import Building.FloorIterator;
 import Building.Space;
 import Building.SpaceIndexOutOfBoundsException;
 
@@ -43,6 +42,29 @@ public class OfficeFloor implements Floor, java.io.Serializable {
         }
     }
 
+    private class FloorIterator implements Iterator<Space> {
+
+    int index = 0;
+
+    @Override
+    public Space next() {
+        return getSpaceByNum(index++);
+
+    }
+
+    @Override
+    public boolean hasNext() {
+
+        return index != getNumberOfSpaces();
+    }
+
+    @Override
+    public void remove() {
+	// TODO Auto-generated method stub
+
+    }
+}
+    
     public OfficeFloor(int numberOfOffice) {
         //Space office=new Office();
         head = new Node();
@@ -59,7 +81,7 @@ public class OfficeFloor implements Floor, java.io.Serializable {
 
     }
 
-    public OfficeFloor(Space[] officeMas) {
+    public OfficeFloor(Space... officeMas) {
         head = new Node();
         numberOfOffice = officeMas.length;
         head.setElement(officeMas[0]);
@@ -158,10 +180,10 @@ public class OfficeFloor implements Floor, java.io.Serializable {
     }
 
     /* (non-Javadoc)
-     * @see Building.Floor#getAllAreaOfFloor()
+     * @see Building.Floor#getTotalArea()
      */
     @Override
-    public double getAllAreaOfFloor() {
+    public double getTotalArea() {
         if (head != null) {
             int area = 0;
             Node node = head;
@@ -180,7 +202,7 @@ public class OfficeFloor implements Floor, java.io.Serializable {
      * @see Building.Floor#getMassOffice()
      */
     @Override
-    public Space[] getMassSpaces() {
+    public Space[] getSpacesArray() {
         Space[] ofMas = new Space[this.getNumberOfSpaces()];
         if (head != null) {
             ofMas[0] = head.getElement();
@@ -199,7 +221,7 @@ public class OfficeFloor implements Floor, java.io.Serializable {
      * @see Building.Floor#getOneOffice(int)
      */
     @Override
-    public Space getOneSpace(int number) {
+    public Space getSpaceByNum(int number) {
         if (number >= this.getNumberOfSpaces() || number < 0) {
             throw new SpaceIndexOutOfBoundsException(number);
         }
@@ -285,7 +307,7 @@ public class OfficeFloor implements Floor, java.io.Serializable {
 
     @Override
     public Iterator iterator() {
-        return new FloorIterator(this);
+        return new FloorIterator();
     }
 
     @Override
@@ -294,10 +316,10 @@ public class OfficeFloor implements Floor, java.io.Serializable {
         stringFloor.append(this.getClass().getSimpleName());
         stringFloor.append(" (");
         for (int i = 0; i < getNumberOfSpaces()-1; i++) {
-            stringFloor.append(getOneSpace(i));
+            stringFloor.append(getSpaceByNum(i));
             stringFloor.append(", ");
         }
-        stringFloor.append(getOneSpace(getNumberOfSpaces()-1));
+        stringFloor.append(getSpaceByNum(getNumberOfSpaces()-1));
         return stringFloor.append(")").toString();
     }
 
@@ -307,7 +329,7 @@ public class OfficeFloor implements Floor, java.io.Serializable {
             Floor ofFloor = (Floor) object;
             if (this.getNumberOfSpaces() == ofFloor.getNumberOfSpaces()) {
                 for (int i = 0; i < ofFloor.getNumberOfSpaces(); i++) {
-                    if (!ofFloor.getOneSpace(i).equals(this.getOneSpace(i))) {
+                    if (!ofFloor.getSpaceByNum(i).equals(this.getSpaceByNum(i))) {
                         return false;
                     }
 
@@ -327,7 +349,7 @@ public class OfficeFloor implements Floor, java.io.Serializable {
         try {
             obj = super.clone();
             for (int i = 0; i < this.getNumberOfSpaces(); i++) {
-                ((OfficeFloor) obj).addFitSpace(i, (Space) this.getOneSpace(i).clone());
+                ((OfficeFloor) obj).addFitSpace(i, (Space) this.getSpaceByNum(i).clone());
             }
             return obj;
         }
@@ -343,7 +365,7 @@ public class OfficeFloor implements Floor, java.io.Serializable {
     public int hashCode() {
         int code = this.getNumberOfSpaces();
         for (int i = 0; i < this.getNumberOfSpaces(); i++) {
-            code = (code ^ this.getOneSpace(i).hashCode());
+            code = (code ^ this.getSpaceByNum(i).hashCode());
         }
         return code;
     }

@@ -6,17 +6,12 @@ import Building.dwelling.DwellingFactory;
 import Building.dwelling.hotel.HotelFactory;
 import Building.office.OfficeFactory;
 import MyException.BuildingUnderArrestException;
-import com.sun.org.apache.bcel.internal.util.ByteSequence;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
@@ -28,7 +23,7 @@ public class SerialServer {
     public static void main(String[] s) throws IOException {
         ServerSocket myServer = null;
         Socket client = null;
-        DataOutputStream out = null;
+        ObjectOutputStream out = null;
         InputStream in = null;
         try {
             myServer = new ServerSocket(4444);
@@ -46,7 +41,8 @@ public class SerialServer {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        out = new DataOutputStream(client.getOutputStream());
+        //out = new DataOutputStream(client.getOutputStream());
+        out = new ObjectOutputStream(client.getOutputStream());
         //in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         in = client.getInputStream();
         ObjectInputStream ois = new ObjectInputStream(in);
@@ -57,7 +53,6 @@ public class SerialServer {
         Building b=null;
         try {
             while ((type = dis.readUTF()) != null) {
-                setFactory(type);
                 //b = Buildings.inputBuilding(in);
                 try {
                     b = (Building)ois.readObject();
@@ -68,11 +63,12 @@ public class SerialServer {
                 System.out.println("Server gets building\n" + b);
                 try {
                     rate = getRating(b);
-                    out.writeUTF(Double.toString(rate));
+                    out.writeObject(Double.toString(rate));
+                    //out.writeUTF(Double.toString(rate));
                     System.out.println(rate);
                 }
                 catch (BuildingUnderArrestException ex) {
-                    out.writeUTF("Building under Arrest");
+                    out.writeObject(ex);
                 }
             }
         }
@@ -88,11 +84,11 @@ public class SerialServer {
 
     static private double getRating(Building b) throws BuildingUnderArrestException {
         Random r = new Random();
-        if (r.nextDouble() < 0.1) {
+        if (r.nextDouble() < 0.8) {
             System.out.println("This building has been arrested");
-            throw new BuildingUnderArrestException();
+            throw new BuildingUnderArrestException("Building arrested");
         }
-        double rate = b.getAllAreaOfBuilding();
+        double rate = b.getTotalArea();
         switch (b.getClass().getSimpleName()) {
             case "Dwelling": {
                 System.out.println("Server gets dwelling building");

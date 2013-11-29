@@ -11,7 +11,7 @@ private Floor floor;
 	
 	public void run() {
 		 for(int i=0; i<floor.getNumberOfSpaces();i++){
-			 System.out.println("Cleaning room number  " +i+" with total area " +floor.getOneSpace(i).getArea()+ " square meters ");	 
+			 System.out.println("Cleaning room number  " +i+" with total area " +floor.getSpaceByNum(i).getArea()+ " square meters ");	 
 		 }
 	
 }

@@ -3,29 +3,27 @@ package Building;
 
 public interface Floor {
 
-	public abstract int getNumberOfSpaces();
+	public  int getNumberOfSpaces();
 
-	public abstract int getNumberRoomsOfSpaces();
+	public  int getNumberRoomsOfSpaces();
 
-	public abstract double getAllAreaOfFloor();
+	public  double getTotalArea();
 
-	public abstract Space[] getMassSpaces();
+	public  Space[] getSpacesArray();
 
-	public abstract Space getOneSpace(int number);
+	public  Space getSpaceByNum(int number);
 
-	public abstract void changeSpace(int number, Space newSpace);
+	public  void changeSpace(int number, Space newSpace);
 
-	public abstract void addNewSpace(int number);
+	public  void addNewSpace(int number);
 
-	public abstract void deleteSpace(int number);
+	public  void deleteSpace(int number);
 			
-	public abstract Space getBestSpace();
+	public  Space getBestSpace();
 
-	public abstract void addFitSpace(int number, Space newSpace);
+	public  void addFitSpace(int number, Space newSpace);
 	
 	java.util.Iterator iterator();
 
-	public abstract Object clone();
-
-	//public 	Object clone();
+	public  Object clone();
 }

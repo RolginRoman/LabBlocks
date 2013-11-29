@@ -78,11 +78,11 @@ public class RaterRunnable implements Runnable {
 
     static private double getRating(Building b) throws BuildingUnderArrestException {
         Random r = new Random();
-        if (r.nextDouble() < 0.5) {
+        if (r.nextDouble() < 0.1) {
             System.out.println("This building has been arrested");
             throw new BuildingUnderArrestException();
         }
-        double rate = b.getAllAreaOfBuilding();
+        double rate = b.getTotalArea();
         switch (b.getClass().getSimpleName()) {
             case "Dwelling": {
                 System.out.println("Server gets dwelling building");
