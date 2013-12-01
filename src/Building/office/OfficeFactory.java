@@ -26,19 +26,19 @@ public class OfficeFactory implements BuildingFactory {
     }
 
     @Override
-    public Floor createFloor(Space[] spaces) {
+    public Floor createFloor(Space... spaces) {
         Floor floor = new OfficeFloor(spaces);
         return floor;
     }
 
     @Override
-    public Building createBuilding(int floorsCount, int[] spacesCounts) {
+    public Building createBuilding(int floorsCount, int... spacesCounts) {
         Building build = new OfficeBuilding(floorsCount, spacesCounts);
         return build;
     }
 
     @Override
-    public Building createBuilding(Floor[] floors) {
+    public Building createBuilding(Floor... floors) {
         Building build = new OfficeBuilding(floors);
         return build;
     }

@@ -16,6 +16,7 @@ import Building.office.OfficeBuilding;
 import Building.office.OfficeFloor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import javax.swing.JFrame;
 import threads.FloorSemaphore;
 
@@ -35,7 +36,7 @@ public class Main {
             Floor of3 = new OfficeFloor(new Space[]{o1, o2, o3, o4, o5, o4, o5, o6, o7});
             Floor of4 = new OfficeFloor(new Space[]{o1, o2, o3, o2, o1, o2, o3, o4, o5, o6, o7});
             Floor fff = new DwellingFloor(5);
-            Building ob = new Dwelling(new Floor[]{of1, of4});
+            Building ob = new Dwelling(new Floor[]{of1, of2, of3, of4});
 //            of1.deleteSpace(500);
 //            File file = new File("input.bin");
 //
@@ -73,16 +74,16 @@ public class Main {
 
             Writer fos = new FileWriter("input.txt");
 
-            Buildings.writeBuilding(ob, fos);
+            Buildings.writeBuildingF(ob, fos);
 
             fos.close();
             //System.out.println(ob.toString());
             Reader r = new FileReader("input.txt");
-            Building readed = Buildings.readBuilding(r);
+            Building readed = Buildings.readBuildingF(new Scanner(r));
 
             r.close();
 
-            //System.out.println(readed.toString());
+            System.out.println(readed.toString());
 //            Writer types = new FileWriter("types.txt");
 //            PrintWriter bw = new PrintWriter(types);
 //            bw.println("Dwelling");
@@ -93,15 +94,14 @@ public class Main {
 //            bw.println("OfficeBuilding");
 //            bw.flush();
 //            types.close();
-
 //            Writer fos1 = new FileWriter("Serialinput.txt");
 //
-//            Buildings.writeBuildingInLine(ob, fos1);
-//            Buildings.writeBuildingInLine(ob, fos1);
-//            Buildings.writeBuildingInLine(ob, fos1);
-//            Buildings.writeBuildingInLine(ob, fos1);
-//            Buildings.writeBuildingInLine(ob, fos1);
-//            Buildings.writeBuildingInLine(ob, fos1);
+//            Buildings.writeBuildingInLines(ob, fos1);
+//            Buildings.writeBuildingInLines(ob, fos1);
+//            Buildings.writeBuildingInLines(ob, fos1);
+//            Buildings.writeBuildingInLines(ob, fos1);
+//            Buildings.writeBuildingInLines(ob, fos1);
+//            Buildings.writeBuildingInLines(ob, fos1);
 //            fos1.close();
 //            Writer types1 = new FileWriter("Serialtypes.txt");
 //            PrintWriter bw1 = new PrintWriter(types1);
@@ -113,12 +113,11 @@ public class Main {
 //            bw1.println("OfficeBuilding");
 //            bw1.flush();
 //            types1.close();
-
-            MainForm mf = new MainForm();
-            mf.setLocation(200, 300);
-            mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            mf.setVisible(true);
-            mf.setResizable(false);
+//            MainForm mf = new MainForm();
+//            mf.setLocation(200, 300);
+//            mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            mf.setVisible(true);
+//            mf.setResizable(false);
         }
         catch (InvalidSpaceAreaException e) {
             System.out.println(e);

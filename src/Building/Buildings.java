@@ -3,7 +3,8 @@ package Building;
 import java.io.*;
 
 import Building.dwelling.DwellingFactory;
-import MyException.ReadFromFileException;
+import MyException.WrongFormatReadFromFileException;
+import java.util.Scanner;
 
 public class Buildings {
 
@@ -29,7 +30,7 @@ public class Buildings {
         return myFactory.createFloor(spacesCount);
     }
 
-    public static Floor createFloor(Space[] spaceMas) {
+    public static Floor createFloor(Space... spaceMas) {
         return myFactory.createFloor(spaceMas);
     }
 
@@ -37,7 +38,7 @@ public class Buildings {
         return myFactory.createBuilding(countFloor, masFloor);
     }
 
-    public static Building createBuild(Floor[] masFloor) {
+    public static Building createBuild(Floor... masFloor) {
         return myFactory.createBuilding(masFloor);
     }
 
@@ -83,7 +84,7 @@ public class Buildings {
         pw.flush();
     }
 
-    public static void writeBuildingInLine(Building building, Writer out) {
+    public static void writeBuildingInLines(Building building, Writer out) {
         PrintWriter pw = new PrintWriter(new BufferedWriter(out));
         pw.print(Integer.toString(building.getFloorCount()));
         pw.print(" ");
@@ -96,34 +97,63 @@ public class Buildings {
                 pw.print(building.getFloorByNum(i).getSpaceByNum(j).getArea());
                 pw.print(" ");
             }
+            pw.println();
         }
-        pw.println();
         pw.flush();
     }
 
-//    public static Building readBuilding(Reader in) throws IOException {
-//        BufferedReader myIn = new BufferedReader(in);
-//        int numberFloor = Integer.parseInt(myIn.readLine());
-//        Floor[] massFloor = new Floor[numberFloor];
-//        for (int i = 0; i < numberFloor; i++) {
-//            Space[] massSpace = new Space[Integer.parseInt(myIn.readLine())];
-//            for (int j = 0; j < massSpace.length; j++) {
-//                //Space sp = new Office(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
-//                Space s = createSpace(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
-//                massSpace[j] = s;
-//            }
-//            massFloor[i] = createFloor(massSpace);
-//            //new OfficeFloor(massSpace);
-//        }
-//        Building building = createBuild(massFloor);//new OfficeBuilding(massFloor);
-//        return building;
-//    }
-    public static Building readBuilding(Reader in) throws IOException, ReadFromFileException  {
+    public static void writeBuildingF(Building building, Writer out) {
+        PrintWriter pw = new PrintWriter(out, true);
+        pw.printf("%d ", building.getFloorCount());
+        for (int i = 0; i < building.getFloorCount(); i++) {
+            pw.printf("%d ", building.getFloorByNum(i).getNumberOfSpaces());
+            for (int j = 0; j < building.getFloorByNum(i).getNumberOfSpaces(); j++) {
+                pw.printf("%d %.1f ", building.getFloorByNum(i).getSpaceByNum(j).getAmtOfRoom(), building.getFloorByNum(i).getSpaceByNum(j).getArea());
+            }
+        }
+
+    }
+
+    //    public static Building readBuilding(Reader in) throws IOException {
+    //        BufferedReader myIn = new BufferedReader(in);
+    //        int numberFloor = Integer.parseInt(myIn.readLine());
+    //        Floor[] massFloor = new Floor[numberFloor];
+    //        for (int i = 0; i < numberFloor; i++) {
+    //            Space[] massSpace = new Space[Integer.parseInt(myIn.readLine())];
+    //            for (int j = 0; j < massSpace.length; j++) {
+    //                //Space sp = new Office(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
+    //                Space s = createSpace(Integer.parseInt(myIn.readLine()), Double.parseDouble(myIn.readLine()));
+    //                massSpace[j] = s;
+    //            }
+    //            massFloor[i] = createFloor(massSpace);
+    //            //new OfficeFloor(massSpace);
+    //        }
+    //        Building building = createBuild(massFloor);//new OfficeBuilding(massFloor);
+    //        return building;
+    //    }
+    public static Building readBuildingF(Scanner s) {
+        int floorCount = s.nextInt();
+        Floor[] floors = new Floor[floorCount];
+        for (int i = 0; i < floorCount; i++) {
+            int spaceCount = s.nextInt();
+            Space[] spaces = new Space[spaceCount];
+            for (int j = 0; j < spaceCount; j++) {
+                int roomCount = s.nextInt();
+                double area = s.nextDouble();
+                Space space = createSpace(roomCount, area);
+                spaces[j] = space;
+            }
+            floors[i]=createFloor(spaces);
+        }
+        return createBuild(floors);
+    }
+
+    public static Building readBuilding(Reader in) throws IOException, WrongFormatReadFromFileException {
         StreamTokenizer st = new StreamTokenizer(in);
         do {
             st.nextToken();
             if (st.ttype == StreamTokenizer.TT_EOF) {
-                throw new ReadFromFileException();
+                throw new WrongFormatReadFromFileException();
             }
         } while (st.ttype != StreamTokenizer.TT_NUMBER);
         Floor[] massFloor = new Floor[(int) st.nval];
@@ -131,7 +161,7 @@ public class Buildings {
             do {
                 st.nextToken();
                 if (st.ttype == StreamTokenizer.TT_EOF) {
-                    throw new ReadFromFileException();
+                    throw new WrongFormatReadFromFileException();
                 }
             } while (st.ttype != StreamTokenizer.TT_NUMBER);
             Space[] massSpace = new Space[(int) st.nval];
@@ -141,14 +171,14 @@ public class Buildings {
                 do {
                     st.nextToken();
                     if (st.ttype == StreamTokenizer.TT_EOF) {
-                        throw new ReadFromFileException();
+                        throw new WrongFormatReadFromFileException();
                     }
                 } while (st.ttype != StreamTokenizer.TT_NUMBER);
                 numOfRooms = (int) st.nval;
                 do {
                     st.nextToken();
                     if (st.ttype == StreamTokenizer.TT_EOF) {
-                        throw new ReadFromFileException();
+                        throw new WrongFormatReadFromFileException();
                     }
                 } while (st.ttype != StreamTokenizer.TT_NUMBER);
                 square = st.nval;

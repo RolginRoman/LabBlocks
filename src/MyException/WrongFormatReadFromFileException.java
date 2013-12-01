@@ -13,13 +13,13 @@ import java.io.IOException;
  *
  * @author irolg_000
  */
-public class ReadFromFileException extends IOException {
+public class WrongFormatReadFromFileException extends IOException {
 
     /**
      * Creates a new instance of <code>ReadFromFileException</code> without
      * detail message.
      */
-    public ReadFromFileException() {
+    public WrongFormatReadFromFileException() {
     }
 
     /**
@@ -28,7 +28,7 @@ public class ReadFromFileException extends IOException {
      *
      * @param msg the detail message.
      */
-    public ReadFromFileException(String msg) {
+    public WrongFormatReadFromFileException(String msg) {
         super(msg);
     }
 }

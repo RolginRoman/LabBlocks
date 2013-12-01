@@ -9,7 +9,7 @@ import Building.Building;
 import Building.Buildings;
 import Building.dwelling.DwellingFactory;
 import Building.office.OfficeFactory;
-import MyException.ReadFromFileException;
+import MyException.WrongFormatReadFromFileException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -285,7 +285,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             readed = Buildings.readBuilding(new FileReader(jfc.getSelectedFile()));
         }
-        catch (ReadFromFileException ex) {
+        catch (WrongFormatReadFromFileException ex) {
             JOptionPane.showMessageDialog(rootPane, "Incorrect format of selected file", "Gosh!", JOptionPane.ERROR_MESSAGE);
         }
         catch (IOException ex) {
@@ -303,7 +303,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             readed = Buildings.readBuilding(new FileReader(jfc.getSelectedFile()));
         }
-        catch (ReadFromFileException ex) {
+        catch (WrongFormatReadFromFileException ex) {
             JOptionPane.showMessageDialog(rootPane, "Incorrect format of selected file", "Gosh!", JOptionPane.ERROR_MESSAGE);
         }
         catch (IOException ex) {
