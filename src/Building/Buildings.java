@@ -4,7 +4,11 @@ import java.io.*;
 
 import Building.dwelling.DwellingFactory;
 import MyException.WrongFormatReadFromFileException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Buildings {
 
@@ -26,8 +30,49 @@ public class Buildings {
         return myFactory.createSpace(area);
     }
 
+//    public static Space createSpace(double area, Class spaceClass) throws IllegalArgumentException {
+//        Constructor con = null;
+//        try {
+//            con = spaceClass.getConstructor(Double.TYPE);
+//        } catch (NoSuchMethodException ex) {
+//            throw new IllegalArgumentException();
+//        }
+//        try {
+//            return (Space) con.newInstance(area);
+//        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+//            throw new IllegalArgumentException();
+//        }
+//    }
+    public static Space createSpace(double area, Class<? extends Space> spaceClass) throws IllegalArgumentException {
+        Constructor<? extends Space> con = null;
+        try {
+            con = spaceClass.getConstructor(Double.TYPE);
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException();
+        }
+        try {
+            return con.newInstance(area);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public static Floor createFloor(int spacesCount) {
         return myFactory.createFloor(spacesCount);
+    }
+
+    public static Floor createFloor(Class<? extends Floor> floorClass, Space... spaces) throws IllegalArgumentException {
+        Constructor<? extends Floor> con = null;
+        try {
+            con = floorClass.getConstructor(Space[].class);
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException();
+        }
+        try {
+            return con.newInstance((Object) spaces);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public static Floor createFloor(Space... spaceMas) {
@@ -40,6 +85,20 @@ public class Buildings {
 
     public static Building createBuild(Floor... masFloor) {
         return myFactory.createBuilding(masFloor);
+    }
+
+    public static Building createBuild(Class<? extends Building> buildClass, Floor... masFloor) throws IllegalArgumentException {
+        Constructor<? extends Building> con = null;
+        try {
+            con = buildClass.getDeclaredConstructor(Floor[].class);
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException();
+        }
+        try {
+            return con.newInstance((Object) masFloor);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public static void outputBuilding(Building building, OutputStream out) throws IOException {
@@ -68,6 +127,22 @@ public class Buildings {
             massFloor[i] = createFloor(massSpace);
         }
         return createBuild(massFloor);
+    }
+
+    public static Building inputBuilding(InputStream in, Class buildingClass, Class floorClass, Class spaceClass) throws IOException {
+        try (DataInputStream myIn = new DataInputStream(in)) {
+            int numberFloor = myIn.readInt();
+            Floor[] massFloor = new Floor[numberFloor];
+            for (int i = 0; i < numberFloor; i++) {
+                Space[] massSpace = new Space[myIn.readInt()];
+                for (int j = 0; j < massSpace.length; j++) {
+                    Space sp = createSpace(myIn.readDouble(), spaceClass);
+                    massSpace[j] = sp;
+                }
+                massFloor[i] = createFloor(floorClass, massSpace);
+            }
+            return createBuild(buildingClass, massFloor);
+        }
     }
 
     public static void writeBuilding(Building building, Writer out) {
@@ -143,12 +218,14 @@ public class Buildings {
                 Space space = createSpace(roomCount, area);
                 spaces[j] = space;
             }
-            floors[i]=createFloor(spaces);
+            floors[i] = createFloor(spaces);
         }
         return createBuild(floors);
     }
 
-    public static Building readBuilding(Reader in) throws IOException, WrongFormatReadFromFileException {
+    public static Building readBuilding(Reader in)
+            throws IOException, WrongFormatReadFromFileException {
+
         StreamTokenizer st = new StreamTokenizer(in);
         do {
             st.nextToken();

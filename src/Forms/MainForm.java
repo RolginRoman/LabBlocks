@@ -27,11 +27,13 @@ import java.io.IOException;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
@@ -50,7 +52,7 @@ public class MainForm extends javax.swing.JFrame {
     public MainForm() {
         initComponents();
         getLookAndFeel();
-        this.setTitle("Buildings");
+        setTitle("Buildings");
     }
 
     /**
@@ -284,11 +286,9 @@ public class MainForm extends javax.swing.JFrame {
         Building readed = null;
         try {
             readed = Buildings.readBuilding(new FileReader(jfc.getSelectedFile()));
-        }
-        catch (WrongFormatReadFromFileException ex) {
+        } catch (WrongFormatReadFromFileException ex) {
             JOptionPane.showMessageDialog(rootPane, "Incorrect format of selected file", "Gosh!", JOptionPane.ERROR_MESSAGE);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.out.println("file problem");
         }
         OrganizePanels(readed);
@@ -302,11 +302,9 @@ public class MainForm extends javax.swing.JFrame {
         Building readed = null;
         try {
             readed = Buildings.readBuilding(new FileReader(jfc.getSelectedFile()));
-        }
-        catch (WrongFormatReadFromFileException ex) {
+        } catch (WrongFormatReadFromFileException ex) {
             JOptionPane.showMessageDialog(rootPane, "Incorrect format of selected file", "Gosh!", JOptionPane.ERROR_MESSAGE);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.out.println("file problem");
         }
         OrganizePanels(readed);
@@ -328,17 +326,13 @@ public class MainForm extends javax.swing.JFrame {
                     break;
                 }
             }
-        }
-        catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        catch (InstantiationException ex) {
+        } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        catch (IllegalAccessException ex) {
+        } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -350,7 +344,6 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel BuildingFloorAmountTxt;
     private javax.swing.JLabel BuildingTotalAreaTxt;
@@ -395,17 +388,13 @@ public class MainForm extends javax.swing.JFrame {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         UIManager.setLookAndFeel(pl.getClassName());
-                    }
-                    catch (ClassNotFoundException ex) {
+                    } catch (ClassNotFoundException ex) {
                         System.out.println("Error in l&f");
-                    }
-                    catch (InstantiationException ex) {
+                    } catch (InstantiationException ex) {
                         System.out.println("Error in l&f");
-                    }
-                    catch (IllegalAccessException ex) {
+                    } catch (IllegalAccessException ex) {
                         System.out.println("Error in l&f");
-                    }
-                    catch (UnsupportedLookAndFeelException ex) {
+                    } catch (UnsupportedLookAndFeelException ex) {
                         System.out.println("Error in l&f");
                     }
                     javax.swing.SwingUtilities.updateComponentTreeUI(MainForm.this);
@@ -424,23 +413,29 @@ public class MainForm extends javax.swing.JFrame {
         BuildingFloorAmountTxt.setText(Integer.toString(b.getFloorCount()));
         BuildingTotalAreaTxt.setText(Double.toString(b.getTotalArea()));
         planPanel.setLayout(new BoxLayout(planPanel, BoxLayout.Y_AXIS));
+        int number = b.getSpacesCount() - 1;
         for (int i = b.getFloorCount() - 1; i >= 0; i--) {
             JPanel floor = new JPanel();
             floor.setBorder(new LineBorder(Color.blue));
-            floor.setPreferredSize(new Dimension(50, 50));
             floor.setVisible(true);
             floor.setLayout(new FlowLayout());
-            JScrollPane scrpane = new JScrollPane(floor);
-            scrpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-            scrpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            JScrollPane scrpane = new JScrollPane();
+            //scrpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            //scrpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.getContentPane().add(scrpane, BorderLayout.CENTER);
+            //JScrollBar jsb = new JScrollBar(JScrollBar.HORIZONTAL);
+            //jsb.setVisible(true);
+            //scrpane.setHorizontalScrollBar(jsb);
+            scrpane.createHorizontalScrollBar().setVisible(true);
+            scrpane.repaint();
+
+            
+            JScrollPane wpane = new JScrollPane();
+            wpane.createVerticalScrollBar();
+            wpane.repaint();
+            
             final int tmp = i;
-            //scrpane.setViewportView(floor);
-//            scrpane.revalidate();
-//            floor.revalidate();
-
             floor.addMouseListener(new FloorPanelMouseListener() {
-
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     FloorNumberTxt.setText(Integer.toString(tmp));
@@ -449,11 +444,10 @@ public class MainForm extends javax.swing.JFrame {
                 }
             });
             for (int j = 0; j < b.getFloorByNum(i).getNumberOfSpaces(); j++) {
-                JLabel space = new JLabel("Space" + j);
+                JButton space = new JButton("Space" + number--);
                 space.setVisible(true);
                 final int tmpj = j;
                 space.addMouseListener(new FloorPanelMouseListener() {
-
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         SquareTxt.setText(Double.toString(b.getFloorByNum(tmp).getSpaceByNum(tmpj).getArea()));
@@ -469,5 +463,4 @@ public class MainForm extends javax.swing.JFrame {
     private void CleanPanel(JPanel panel) {
         panel.removeAll();
     }
-
 }
